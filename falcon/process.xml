@@ -11,10 +11,10 @@
 	<order>FIFO</order>
 	<frequency>minutes(10)</frequency>
 	<inputs>
-	        <input name="onoaamInput" feed="logDataIn" start="now(0,-10)" end="now(0,-1)" />
+	        <input name="accesslogInput" feed="logDataIn" start="now(0,-10)" end="now(0,-1)" />
 	</inputs>
 	<outputs>
-	        <output name="onoaamOutput" feed="logDataOut" instance="now(0,0)" />
+	        <output name="accesslogOutput" feed="logDataOut" instance="now(0,0)" />
 	</outputs>
 	<workflow engine="pig" path="/apps/apache_logs/pig/apache_logs.pig" lib="/apps/apache_logs/lib" />
 	<retry policy="periodic" delay="minutes(1)" attempts="3" />

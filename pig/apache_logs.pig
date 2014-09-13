@@ -2,7 +2,7 @@ DEFINE MD5 datafu.pig.hash.MD5();
 
 set solr.collection 'access_logs';
 
-raw_logs = load '$onoaamInput' USING TextLoader as (line:chararray);
+raw_logs = load '$accesslogInput' USING TextLoader as (line:chararray);
 logs_base = foreach raw_logs generate MD5(line) as (id:chararray), flatten (
      REGEX_EXTRACT_ALL(line, '^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] "(.+?)" (\\S+) (\\S+) "([^"]*)" "([^"]*)"'))
      as (remoteaddr:   chararray,
@@ -21,7 +21,7 @@ solr_log_data = FOREACH logs_base GENERATE id, 'remoteaddr', remoteaddr, 'remote
 
 final_log_data_min = foreach final_log_data generate CONCAT(remoteaddr,time) as key, remoteaddr, time, request, status, bytes_string, referrer, browser;
 
-store final_log_data into 'demo.apache_logs' using org.apache.hcatalog.pig.HCatStorer('date=$falcon_onoaamOutput_dated_partition_value');
+store final_log_data into 'demo.apache_logs' using org.apache.hcatalog.pig.HCatStorer('date=$falcon_accesslogOutput_dated_partition_value');
 
 store solr_log_data into 'http://current.hortonworks.local:8983/solr' using com.lucidworks.hadoop.pig.SolrStoreFunc();
 
